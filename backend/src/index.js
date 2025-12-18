@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const routes = require('./routes');
 const { errorHandler } = require('./middleware/errorHandler');
+const { connect } = require('./db/mongo');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,17 @@ app.use('/api', routes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Freshmart backend running on http://localhost:${PORT}`);
-});
+  (async () => {
+    if (process.env.MONGODB_URI) {
+      try {
+        await connect(process.env.MONGODB_URI);
+        console.log('Connected to MongoDB');
+      } catch (err) {
+        console.warn('Could not connect to MongoDB:', err.message);
+      }
+    }
+
+    app.listen(PORT, () => {
+      console.log(`Freshmart backend running on http://localhost:${PORT}`);
+    });
+  })();
