@@ -541,6 +541,8 @@ declare module "process" {
                     readonly node_install_npm: boolean;
                     readonly node_install_waf: boolean;
                     readonly node_prefix: string;
+                    readonly node_shared_brotli: boolean;
+                    readonly node_shared_cares: boolean;
                     readonly node_shared_openssl: boolean;
                     readonly node_shared_v8: boolean;
                     readonly node_shared_zlib: boolean;
