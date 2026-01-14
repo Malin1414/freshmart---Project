@@ -65,7 +65,7 @@ const SignUp = () => {
   };
 
   const benefits = [
-    "Free delivery on orders over $50",
+    "Free delivery on orders over Rs. 5000",
     "Exclusive member-only discounts",
     "Early access to new products",
     "Track your orders in real-time",
@@ -110,9 +110,8 @@ const SignUp = () => {
                 placeholder="John Doe"
                 value={formData.name}
                 onChange={handleChange}
-                className={`h-12 bg-card border-2 ${
-                  errors.name ? "border-destructive" : "border-border"
-                } focus:border-primary transition-colors`}
+                className={`h-12 bg-card border-2 ${errors.name ? "border-destructive" : "border-border"
+                  } focus:border-primary transition-colors`}
               />
               {errors.name && (
                 <p className="text-sm text-destructive">{errors.name}</p>
@@ -131,9 +130,8 @@ const SignUp = () => {
                 placeholder="john@example.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={`h-12 bg-card border-2 ${
-                  errors.email ? "border-destructive" : "border-border"
-                } focus:border-primary transition-colors`}
+                className={`h-12 bg-card border-2 ${errors.email ? "border-destructive" : "border-border"
+                  } focus:border-primary transition-colors`}
               />
               {errors.email && (
                 <p className="text-sm text-destructive">{errors.email}</p>
@@ -153,9 +151,8 @@ const SignUp = () => {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`h-12 bg-card border-2 pr-12 ${
-                    errors.password ? "border-destructive" : "border-border"
-                  } focus:border-primary transition-colors`}
+                  className={`h-12 bg-card border-2 pr-12 ${errors.password ? "border-destructive" : "border-border"
+                    } focus:border-primary transition-colors`}
                 />
                 <button
                   type="button"

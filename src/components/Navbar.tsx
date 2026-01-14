@@ -3,15 +3,20 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, X, Leaf, User } from "lucide-react";
 
+import { useShop } from "@/context/ShopContext";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { cartItems } = useShop();
 
   const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "Shop", href: "#categories" },
-    { name: "Categories", href: "#categories" },
-    { name: "How it Works", href: "#how-it-works" },
-    { name: "Contact", href: "#footer" },
+    { name: "Home", href: "/" },
+    { name: "Shop", href: "/#FeaturedProducts" },
+    { name: "Categories", href: "/#categories" },
+    { name: "Shop All Product", href: "/products" },
+    { name: "My Orders", href: "/my-orders" },
+    { name: "How it Works", href: "/#how-it-works" },
+    { name: "Contact", href: "/#footer" },
   ];
 
   return (
@@ -19,25 +24,25 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <Leaf className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="font-display text-xl font-bold text-foreground">
               Fresh<span className="text-primary">Mart</span>
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
                 className="text-muted-foreground hover:text-primary font-medium transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -48,12 +53,17 @@ const Navbar = () => {
                 <User className="w-5 h-5" />
               </Button>
             </Link>
-            <Button variant="outline" size="icon" className="relative">
-              <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-bold">
-                3
-              </span>
-            </Button>
+
+            <Link to="/cart">
+              <Button variant="outline" size="icon" className="relative">
+                <ShoppingCart className="w-5 h-5" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-bold">
+                    {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                  </span>
+                )}
+              </Button>
+            </Link>
             <Link to="/signup">
               <Button className="hidden md:flex" size="sm">
                 Sign Up
@@ -77,14 +87,14 @@ const Navbar = () => {
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
                   className="px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted rounded-lg font-medium transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
               <Button className="mt-4 mx-4">Sign Up</Button>
             </div>

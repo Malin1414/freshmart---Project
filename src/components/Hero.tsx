@@ -8,16 +8,16 @@ const Hero = () => {
       {/* Decorative elements */}
       <div className="absolute top-40 left-10 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
       <div className="absolute bottom-40 right-10 w-32 h-32 bg-accent/10 rounded-full blur-3xl" />
-      
+
       <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <div className="space-y-8 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold animate-fade-in">
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              Free delivery on orders over $50
+              Free delivery on orders over Rs. 5000
             </div>
-            
+
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight animate-fade-in" style={{ animationDelay: "0.1s" }}>
               Fresh Groceries
               <br />
@@ -25,19 +25,23 @@ const Hero = () => {
               <br />
               Your Door
             </h1>
-            
+
             <p className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto lg:mx-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
               Shop from thousands of fresh products and get them delivered to your doorstep within hours. Quality guaranteed.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <Button variant="hero" size="xl">
-                Start Shopping
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-              <Button variant="outline" size="xl">
-                View Categories
-              </Button>
+              <a href="#FeaturedProducts">
+                <Button variant="hero" size="xl">
+                  Start Shopping
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+              </a>
+              <a href="#categories">
+                <Button variant="outline" size="xl">
+                  View Categories
+                </Button>
+              </a>
             </div>
 
             {/* Trust badges */}
@@ -75,7 +79,7 @@ const Hero = () => {
                 className="w-full max-w-lg mx-auto rounded-3xl shadow-product animate-float"
               />
             </div>
-            
+
             {/* Floating badge */}
             <div className="absolute top-8 -left-4 bg-card rounded-2xl p-4 shadow-elevated animate-bounce-gentle z-20">
               <div className="flex items-center gap-3">

@@ -1,4 +1,5 @@
 import { Apple, Carrot, Milk, Beef, Croissant, Fish, Coffee, Candy } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const categories = [
   { name: "Fruits", icon: Apple, color: "bg-tomato/10 text-tomato", count: "120+" },
@@ -29,9 +30,9 @@ const Categories = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
           {categories.map((category, index) => (
-            <a
+            <Link
               key={category.name}
-              href="#"
+              to={`/products?category=${category.name}`}
               className="group bg-card rounded-2xl p-6 text-center hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 border border-border/50 animate-fade-in"
               style={{ animationDelay: `${index * 0.05}s` }}
             >
@@ -42,7 +43,7 @@ const Categories = () => {
                 {category.name}
               </h3>
               <span className="text-xs text-muted-foreground">{category.count} items</span>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
