@@ -86,15 +86,7 @@ const Login = () => {
       {/* Left Section - Login Form */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12 relative z-10">
         <div className="w-full max-w-md">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-10 group cursor-pointer">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-              <Leaf className="w-7 h-7 text-white" />
-            </div>
-            <span className="font-bold text-2xl bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              Fresh<span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Mart</span>
-            </span>
-          </div>
+         
 
           {/* Welcome Card */}
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 border border-white/50">
