@@ -18,6 +18,7 @@ export interface CartItem extends Product {
     quantity: number;
 }
 
+
 export interface Order {
     id: string;
     date: string;
@@ -28,6 +29,7 @@ export interface Order {
     payment: string;
 }
 
+
 interface ShopContextType {
     cartItems: CartItem[];
     wishlistItems: Product[];
@@ -37,9 +39,11 @@ interface ShopContextType {
     addToWishlist: (product: Product) => void;
     removeFromWishlist: (productId: number) => void;
     getCartTotal: () => number;
+
     clearCart: () => void;
     orders: Order[];
     addOrder: (order: Order) => void;
+
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
@@ -51,8 +55,10 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     // Initial wishlist state
     const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
 
+
     // Order state
     const [orders, setOrders] = useState<Order[]>([]);
+
 
     const addToCart = (product: Product) => {
         setCartItems((prev) => {
@@ -107,6 +113,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
+
     const clearCart = () => {
         setCartItems([]);
     };
@@ -114,6 +121,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     const addOrder = (order: Order) => {
         setOrders((prev) => [order, ...prev]);
     };
+
 
     return (
         <ShopContext.Provider
@@ -126,9 +134,11 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
                 addToWishlist,
                 removeFromWishlist,
                 getCartTotal,
+
                 clearCart,
                 orders,
                 addOrder,
+
             }}
         >
             {children}
