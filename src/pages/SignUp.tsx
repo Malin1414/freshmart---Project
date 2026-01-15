@@ -6,6 +6,8 @@ import { Leaf, Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const signUpSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
@@ -72,7 +74,9 @@ const SignUp = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-hero-gradient flex">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-hero-gradient flex pt-20">
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
@@ -269,7 +273,9 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 };
 
