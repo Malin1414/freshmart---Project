@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Mail, Shield, Lock, CheckCircle2, Sparkles, Leaf } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const schema = z.object({
   email: z.string().trim().email("Please enter a valid email address").max(255),
@@ -61,7 +63,9 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-6 relative overflow-hidden">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-6 relative overflow-hidden pt-20">
       {/* Animated Background Elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-green-200/30 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -278,7 +282,9 @@ const ForgotPassword = () => {
           animation-delay: 1s;
         }
       `}</style>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 };
 
