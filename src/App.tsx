@@ -7,7 +7,7 @@ import Cart from "./pages/Cart";
 import Shop from "./pages/Shop";
 import Products from "./pages/Products";
 import MyOrders from "./pages/MyOrders";
- 
+
 import Checkout from "./pages/Checkout";
 
 

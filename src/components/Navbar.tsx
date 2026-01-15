@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, X, Leaf, User } from "lucide-react";
+import { ShoppingCart, Menu, X, Leaf, User, LogOut } from "lucide-react";
 
 import { useShop } from "@/context/ShopContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { cartItems } = useShop();
+  const { cartItems, currentUser, logout } = useShop();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -48,11 +48,19 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <Link to="/signup">
-              <Button variant="ghost" size="icon" className="hidden md:flex">
-                <User className="w-5 h-5" />
+            {currentUser ? (
+              <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
+                <Link to="/my-orders">
+                  <User className="w-5 h-5" />
+                </Link>
               </Button>
-            </Link>
+            ) : (
+              <Link to="/signup">
+                <Button variant="ghost" size="icon" className="hidden md:flex">
+                  <User className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
 
             <Link to="/cart">
               <Button variant="outline" size="icon" className="relative">
@@ -64,11 +72,21 @@ const Navbar = () => {
                 )}
               </Button>
             </Link>
-            <Link to="/signup">
-              <Button className="hidden md:flex" size="sm">
-                Sign Up
-              </Button>
-            </Link>
+            {currentUser ? (
+              <div className="hidden md:flex items-center gap-2">
+                <span className="text-sm font-medium">Hi, {currentUser.name}</span>
+                <Button size="sm" variant="outline" onClick={logout}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link to="/signup">
+                <Button className="hidden md:flex" size="sm">
+                  Sign Up
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <Button

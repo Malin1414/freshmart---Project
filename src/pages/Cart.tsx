@@ -209,9 +209,7 @@ const Cart = () => {
                                     Checkout
                                 </Button>
                             </Link>
-                            <Button className="w-full mt-8 bg-green-600 hover:bg-green-700 text-white h-12 text-lg">
-                                Checkout
-                            </Button>
+                           
 
                             <div className="mt-4 text-center text-sm text-gray-500">
                                 Do you already have an account?{" "}

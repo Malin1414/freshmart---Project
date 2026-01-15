@@ -10,7 +10,7 @@ import { ArrowLeft, CreditCard, Banknote } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const Checkout = () => {
-    const { cartItems, getCartTotal, clearCart, addOrder } = useShop();
+    const { cartItems, getCartTotal, clearCart, addOrder, currentUser } = useShop();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
@@ -71,6 +71,7 @@ const Checkout = () => {
         setTimeout(() => {
             const newOrder = {
                 id: `#ORD-${Math.floor(Math.random() * 10000)}`,
+                userId: currentUser?.id || "guest",
                 date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
                 total: total,
                 status: "Processing" as const,
