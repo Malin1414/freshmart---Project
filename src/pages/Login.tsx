@@ -6,16 +6,6 @@ import { Eye, EyeOff, ArrowRight, Leaf } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Please enter a valid email address").max(255),
@@ -158,72 +148,11 @@ const Login = () => {
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
 
-            {/* Forgot password (dialog) */}
+            {/* Forgot password (link) */}
             <div className="flex justify-end">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button type="button" className="text-sm text-primary hover:underline">
-                    Forgot password?
-                  </button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Reset your password</DialogTitle>
-                    <DialogDescription>
-                      Enter your account email and we'll send a password reset link if the account exists.
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault();
-                      // validate
-                      const email = (e.currentTarget.elements.namedItem("resetEmail") as HTMLInputElement).value;
-                      const schema = z.object({ email: z.string().trim().email("Please enter a valid email address").max(255) });
-                      const res = schema.safeParse({ email });
-                      if (!res.success) {
-                        // show error toast
-                        toast({ title: "Invalid email", description: res.error.errors[0].message, variant: "destructive" });
-                        return;
-                      }
-
-                      try {
-                        // show optimistic message
-                        const resp = await fetch("/api/auth/forgot", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ email }),
-                        });
-
-                        if (!resp.ok) {
-                          const data = await resp.json().catch(() => ({}));
-                          toast({ title: "Error", description: data?.error || "Unable to send reset email", variant: "destructive" });
-                          return;
-                        }
-
-                        toast({ title: "Check your inbox", description: "If an account exists, you will receive an email with a reset link." });
-                      } catch (err) {
-                        toast({ title: "Network error", description: "Unable to reach server. Try again.", variant: "destructive" });
-                      }
-                    }}
-                    className="mt-4"
-                  >
-                    <div className="space-y-2">
-                      <Label htmlFor="resetEmail" className="text-foreground font-medium">
-                        Email
-                      </Label>
-                      <Input id="resetEmail" name="resetEmail" type="email" placeholder="your@email.com" className="h-12 bg-card border-2 border-border focus:border-primary transition-colors" />
-                    </div>
-
-                    <DialogFooter className="mt-4">
-                      <DialogClose asChild>
-                        <button type="button" className="mr-2 rounded-md bg-muted px-4 py-2 text-sm">Cancel</button>
-                      </DialogClose>
-                      <button type="submit" className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground">Send reset link</button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
+              <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                Forgot password?
+              </Link>
             </div>
 
             <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
