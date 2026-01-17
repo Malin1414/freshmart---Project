@@ -52,7 +52,9 @@ const Cart = () => {
                                     <p className="text-gray-500 mb-6">
                                         Looks like you haven't added anything yet.
                                     </p>
-                                    <Link to="/">
+
+                                    <Link to="/shop">
+
                                         <Button>Start Shopping</Button>
                                     </Link>
                                 </div>
@@ -201,9 +203,13 @@ const Cart = () => {
                                     <span>Rs. {total.toFixed(2)}</span>
                                 </div>
                             </div>
-                            <Button className="w-full mt-8 bg-green-600 hover:bg-green-700 text-white h-12 text-lg">
-                                Checkout
-                            </Button>
+
+                            <Link to="/checkout" className="w-full">
+                                <Button className="w-full mt-8 bg-green-600 hover:bg-green-700 text-white h-12 text-lg">
+                                    Checkout
+                                </Button>
+                            </Link>
+                           
 
                             <div className="mt-4 text-center text-sm text-gray-500">
                                 Do you already have an account?{" "}

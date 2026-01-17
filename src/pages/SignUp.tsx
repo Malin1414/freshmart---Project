@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Leaf, Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { useShop } from "@/context/ShopContext";
 
 const signUpSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
@@ -23,6 +24,8 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { signup } = useShop();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,16 +55,18 @@ const SignUp = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    toast({
-      title: "Account created successfully!",
-      description: "Welcome to FreshMart. Start shopping for fresh groceries!",
-    });
-
-    setIsLoading(false);
-    setFormData({ name: "", email: "", password: "" });
+    // Call signup from context
+    // Simulate network delay for better UX
+    setTimeout(() => {
+      signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      setIsLoading(false);
+      setFormData({ name: "", email: "", password: "" });
+      navigate("/my-orders");
+    }, 1000);
   };
 
   const benefits = [

@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Package, ChevronRight, Clock, Truck, CheckCircle, Star, MapPin, CreditCard, Calendar } from "lucide-react";
+import { Package, ChevronRight, Clock, Truck, CheckCircle, Star, MapPin, CreditCard, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Dialog,
@@ -16,66 +16,26 @@ import {
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
     SheetHeader,
     SheetTitle,
+    SheetDescription,
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 
+import { useShop } from "@/context/ShopContext";
+
 const MyOrders = () => {
+    const { orders: allOrders, currentUser } = useShop();
+
+    // Filter orders for current user or show empty if not logged in
+    const orders = currentUser
+        ? allOrders.filter(order => order.userId === currentUser.id)
+        : [];
+
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [ratings, setRatings] = useState<{ [key: string]: number }>({});
     const [isRatingOpen, setIsRatingOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
-    // Dummy order data
-    const orders = [
-        {
-            id: "#ORD-7829",
-            date: "Jan 15, 2026",
-            total: 2500,
-            status: "Delivered",
-            items: ["Organic Bananas", "Fresh Milk", "Whole Wheat Bread"],
-            address: "123 Green Street, Colombo 03",
-            payment: "Credit Card (**** 4242)"
-        },
-        {
-            id: "#ORD-7810",
-            date: "Jan 10, 2026",
-            total: 4800,
-            status: "In Transit",
-            items: ["Chicken Breast", "Red Tomatoes", "Bell Peppers"],
-            address: "456 Market Lane, Kandy",
-            payment: "Cash on Delivery"
-        },
-        {
-            id: "#ORD-7755",
-            date: "Dec 28, 2025",
-            total: 1200,
-            status: "Delivered",
-            items: ["Farm Eggs", "Spinach"],
-            address: "789 Lake Road, Galle",
-            payment: "Credit Card (**** 1234)"
-        },
-        {
-            id: "#ORD-7901",
-            date: "Jan 16, 2026",
-            total: 3400,
-            status: "Processing",
-            items: ["Premium Steak", "Asparagus"],
-            address: "123 Green Street, Colombo 03",
-            payment: "Credit Card (**** 4242)"
-        },
-        {
-            id: "#ORD-7905",
-            date: "Jan 17, 2026",
-            total: 1500,
-            status: "Processing",
-            items: ["Coffee Beans", "Dark Chocolate"],
-            address: "101 Hill Top, Nuwara Eliya",
-            payment: "Online Wallet"
-        }
-    ];
 
     const openRatingDialog = (order: any) => {
         setSelectedOrder(order);
@@ -126,8 +86,8 @@ const MyOrders = () => {
                     <div key={order.id} className="bg-card border border-border rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center gap-4 w-full md:w-auto">
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${order.status === 'Delivered' ? 'bg-green-100 text-green-600' :
-                                    order.status === 'In Transit' ? 'bg-blue-100 text-blue-600' :
-                                        'bg-yellow-100 text-yellow-600'
+                                order.status === 'In Transit' ? 'bg-blue-100 text-blue-600' :
+                                    'bg-yellow-100 text-yellow-600'
                                 }`}>
                                 {order.status === 'Delivered' ? <CheckCircle className="w-6 h-6" /> :
                                     order.status === 'In Transit' ? <Truck className="w-6 h-6" /> :
@@ -154,8 +114,8 @@ const MyOrders = () => {
 
                             <div className="flex flex-col gap-2 items-end">
                                 <div className={`px-3 py-1 rounded-full text-xs font-medium w-fit ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
-                                        order.status === 'In Transit' ? 'bg-blue-100 text-blue-700' :
-                                            'bg-yellow-100 text-yellow-700'
+                                    order.status === 'In Transit' ? 'bg-blue-100 text-blue-700' :
+                                        'bg-yellow-100 text-yellow-700'
                                     }`}>
                                     {order.status === 'In Transit' ? 'To Receive' : order.status}
                                 </div>
@@ -217,7 +177,16 @@ const MyOrders = () => {
                         </TabsContent>
                     </Tabs>
 
-                    {orders.length === 0 && (
+                    {!currentUser ? (
+                        <div className="text-center py-12">
+                            <User className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                            <h3 className="text-xl font-semibold mb-2">Please Log In</h3>
+                            <p className="text-muted-foreground mb-6">Log in to view your order history.</p>
+                            <Link to="/signup">
+                                <Button>Log In / Sign Up</Button>
+                            </Link>
+                        </div>
+                    ) : orders.length === 0 && (
                         <div className="text-center py-12">
                             <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                             <h3 className="text-xl font-semibold mb-2">No orders yet</h3>
@@ -250,8 +219,8 @@ const MyOrders = () => {
                                             key={star}
                                             onClick={() => handleRating(item, star)}
                                             className={`transition-all hover:scale-110 focus:outline-none ${(ratings[item] || 0) >= star
-                                                    ? "text-yellow-400 fill-current"
-                                                    : "text-muted-foreground/30"
+                                                ? "text-yellow-400 fill-current"
+                                                : "text-muted-foreground/30"
                                                 }`}
                                         >
                                             <Star className={`w-5 h-5 ${(ratings[item] || 0) >= star ? "fill-yellow-400" : ""}`} />
@@ -286,8 +255,8 @@ const MyOrders = () => {
                             {/* Status */}
                             <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
                                 <div className={`p-2 rounded-full ${selectedOrder.status === 'Delivered' ? 'bg-green-100 text-green-600' :
-                                        selectedOrder.status === 'In Transit' ? 'bg-blue-100 text-blue-600' :
-                                            'bg-yellow-100 text-yellow-600'
+                                    selectedOrder.status === 'In Transit' ? 'bg-blue-100 text-blue-600' :
+                                        'bg-yellow-100 text-yellow-600'
                                     }`}>
                                     {selectedOrder.status === 'Delivered' ? <CheckCircle className="w-5 h-5" /> :
                                         selectedOrder.status === 'In Transit' ? <Truck className="w-5 h-5" /> :

@@ -7,6 +7,10 @@ import Cart from "./pages/Cart";
 import Shop from "./pages/Shop";
 import Products from "./pages/Products";
 import MyOrders from "./pages/MyOrders";
+
+import Checkout from "./pages/Checkout";
+
+
 import { ShopProvider } from "./context/ShopContext";
 
 const queryClient = new QueryClient();
@@ -25,6 +29,10 @@ const App = () => (
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/cart" element={<Cart />} />
+
+          <Route path="/checkout" element={<Checkout />} />
+
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
