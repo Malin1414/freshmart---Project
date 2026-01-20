@@ -14,7 +14,6 @@ const Navbar = () => {
     { name: "Shop", href: "/#FeaturedProducts" },
     { name: "Categories", href: "/#categories" },
     { name: "Shop All Product", href: "/products" },
-    { name: "My Orders", href: "/my-orders" },
     { name: "How it Works", href: "/#how-it-works" },
     { name: "Contact", href: "/#footer" },
   ];
