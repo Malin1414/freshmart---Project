@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Leaf, Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { useShop } from "@/context/ShopContext";
 
 const signUpSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
@@ -23,6 +24,8 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { signup } = useShop();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,40 +55,35 @@ const SignUp = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    toast({
-      title: "Account created successfully!",
-      description: "Welcome to FreshMart. Start shopping for fresh groceries!",
-    });
-
-    setIsLoading(false);
-    setFormData({ name: "", email: "", password: "" });
+    // Call signup from context
+    // Simulate network delay for better UX
+    setTimeout(() => {
+      signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      setIsLoading(false);
+      setFormData({ name: "", email: "", password: "" });
+      navigate("/my-orders");
+    }, 1000);
   };
 
   const benefits = [
-    "Free delivery on orders over $50",
+    "Free delivery on orders over Rs. 5000",
     "Exclusive member-only discounts",
     "Early access to new products",
     "Track your orders in real-time",
   ];
 
   return (
-    <div className="min-h-screen bg-hero-gradient flex">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-hero-gradient flex pt-20">
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-8 group">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold text-foreground">
-              Fresh<span className="text-primary">Mart</span>
-            </span>
-          </Link>
-
+         
           {/* Header */}
           <div className="mb-8">
             <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -110,9 +108,8 @@ const SignUp = () => {
                 placeholder="John Doe"
                 value={formData.name}
                 onChange={handleChange}
-                className={`h-12 bg-card border-2 ${
-                  errors.name ? "border-destructive" : "border-border"
-                } focus:border-primary transition-colors`}
+                className={`h-12 bg-card border-2 ${errors.name ? "border-destructive" : "border-border"
+                  } focus:border-primary transition-colors`}
               />
               {errors.name && (
                 <p className="text-sm text-destructive">{errors.name}</p>
@@ -131,9 +128,8 @@ const SignUp = () => {
                 placeholder="john@example.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={`h-12 bg-card border-2 ${
-                  errors.email ? "border-destructive" : "border-border"
-                } focus:border-primary transition-colors`}
+                className={`h-12 bg-card border-2 ${errors.email ? "border-destructive" : "border-border"
+                  } focus:border-primary transition-colors`}
               />
               {errors.email && (
                 <p className="text-sm text-destructive">{errors.email}</p>
@@ -153,9 +149,8 @@ const SignUp = () => {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`h-12 bg-card border-2 pr-12 ${
-                    errors.password ? "border-destructive" : "border-border"
-                  } focus:border-primary transition-colors`}
+                  className={`h-12 bg-card border-2 pr-12 ${errors.password ? "border-destructive" : "border-border"
+                    } focus:border-primary transition-colors`}
                 />
                 <button
                   type="button"
@@ -269,7 +264,9 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 };
 
