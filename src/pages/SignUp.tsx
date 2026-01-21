@@ -77,20 +77,13 @@ const SignUp = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-hero-gradient flex">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-hero-gradient flex pt-20">
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 mb-8 group">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold text-foreground">
-              Fresh<span className="text-primary">Mart</span>
-            </span>
-          </Link>
-
+         
           {/* Header */}
           <div className="mb-8">
             <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -271,7 +264,9 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 };
 
