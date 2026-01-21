@@ -23,7 +23,7 @@ export interface Order {
     userId: string;
     date: string;
     total: number;
-    status: "Processing" | "In Transit" | "Delivered";
+    status: "Processing" | "In Transit" | "Delivered" | "Cancelled";
     items: string[];
     address: string;
     payment: string;
@@ -49,6 +49,7 @@ interface ShopContextType {
     clearCart: () => void;
     orders: Order[];
     addOrder: (order: Order) => void;
+    cancelOrder: (orderId: string) => void;
 
     currentUser: User | null;
     signup: (user: Omit<User, "id">) => void;
@@ -167,6 +168,15 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
         setOrders((prev) => [order, ...prev]);
     };
 
+    const cancelOrder = (orderId: string) => {
+        setOrders((prev) =>
+            prev.map((order) =>
+                order.id === orderId ? { ...order, status: "Cancelled" } : order
+            )
+        );
+        toast.success("Order cancelled");
+    };
+
     const signup = (userData: Omit<User, "id">) => {
         const usersProp = localStorage.getItem("users");
         const users: User[] = usersProp ? JSON.parse(usersProp) : [];
@@ -220,6 +230,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
                 clearCart,
                 orders,
                 addOrder,
+                cancelOrder,
 
                 currentUser,
                 signup,

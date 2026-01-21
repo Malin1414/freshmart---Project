@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Package, ChevronRight, Clock, Truck, CheckCircle, Star, MapPin, CreditCard, User } from "lucide-react";
+import { Package, ChevronRight, Clock, Truck, CheckCircle, Star, MapPin, CreditCard, User, XCircle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Dialog,
@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { useShop } from "@/context/ShopContext";
 
 const MyOrders = () => {
-    const { orders: allOrders, currentUser } = useShop();
+    const { orders: allOrders, currentUser, cancelOrder } = useShop();
 
     // Filter orders for current user or show empty if not logged in
     const orders = currentUser
@@ -87,11 +87,13 @@ const MyOrders = () => {
                         <div className="flex items-center gap-4 w-full md:w-auto">
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${order.status === 'Delivered' ? 'bg-green-100 text-green-600' :
                                 order.status === 'In Transit' ? 'bg-blue-100 text-blue-600' :
-                                    'bg-yellow-100 text-yellow-600'
+                                    order.status === 'Cancelled' ? 'bg-destructive/10 text-destructive' :
+                                        'bg-yellow-100 text-yellow-600'
                                 }`}>
                                 {order.status === 'Delivered' ? <CheckCircle className="w-6 h-6" /> :
                                     order.status === 'In Transit' ? <Truck className="w-6 h-6" /> :
-                                        <Clock className="w-6 h-6" />}
+                                        order.status === 'Cancelled' ? <XCircle className="w-6 h-6" /> :
+                                            <Clock className="w-6 h-6" />}
                             </div>
                             <div>
                                 <h3 className="font-semibold text-foreground">{order.id}</h3>
@@ -115,7 +117,8 @@ const MyOrders = () => {
                             <div className="flex flex-col gap-2 items-end">
                                 <div className={`px-3 py-1 rounded-full text-xs font-medium w-fit ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
                                     order.status === 'In Transit' ? 'bg-blue-100 text-blue-700' :
-                                        'bg-yellow-100 text-yellow-700'
+                                        order.status === 'Cancelled' ? 'bg-destructive/10 text-destructive' :
+                                            'bg-yellow-100 text-yellow-700'
                                     }`}>
                                     {order.status === 'In Transit' ? 'To Receive' : order.status}
                                 </div>
@@ -129,6 +132,21 @@ const MyOrders = () => {
                                     >
                                         <Star className="w-3 h-3" />
                                         Rate Products
+                                    </Button>
+                                )}
+
+                                {order.status === 'Processing' && (
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        className="h-8 text-xs gap-1"
+                                        onClick={() => {
+                                            if (window.confirm("Are you sure you want to cancel this order?")) {
+                                                cancelOrder(order.id);
+                                            }
+                                        }}
+                                    >
+                                        Cancel Order
                                     </Button>
                                 )}
                             </div>
