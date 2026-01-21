@@ -1,23 +1,75 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, X, Leaf, User, LogOut } from "lucide-react";
 
 import { useShop } from "@/context/ShopContext";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cartItems, currentUser, logout } = useShop();
+  const location = useLocation();
+  const [activeSection, setActiveSection] = useState("");
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Shop", href: "/#FeaturedProducts" },
     { name: "Categories", href: "/#categories" },
+    { name: "Shop", href: "/#FeaturedProducts" },
     { name: "Shop All Product", href: "/products" },
-    { name: "My Orders", href: "/my-orders" },
     { name: "How it Works", href: "/#how-it-works" },
     { name: "Contact", href: "/#footer" },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (location.pathname !== "/") return;
+
+      const sections = navLinks
+        .map((link) => {
+          if (link.href.includes("#")) {
+            return link.href.split("#")[1];
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      let current = "";
+
+      if (window.scrollY < 100) {
+        current = "";
+      } else {
+        for (const section of sections) {
+          const element = document.getElementById(section as string);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 150 && rect.bottom >= 150) {
+              current = section as string;
+              break;
+            }
+          }
+        }
+      }
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [location.pathname]);
+
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/" && !activeSection) {
+      return true;
+    }
+    if (path.includes("#")) {
+      const sectionId = path.split("#")[1];
+      return location.pathname === "/" && activeSection === sectionId;
+    }
+    if (path !== "/" && location.pathname.startsWith(path)) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
@@ -39,7 +91,12 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.href}
-                className="text-muted-foreground hover:text-primary font-medium transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                className={cn(
+                  "font-medium transition-colors hover:text-primary",
+                  isActive(link.href)
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
               >
                 {link.name}
               </Link>
@@ -108,7 +165,12 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.href}
-                  className="px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted rounded-lg font-medium transition-colors"
+                  className={cn(
+                    "px-4 py-3 rounded-lg font-medium transition-colors",
+                    isActive(link.href)
+                      ? "text-primary bg-muted/50"
+                      : "text-muted-foreground hover:text-primary hover:bg-muted"
+                  )}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
