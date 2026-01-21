@@ -34,6 +34,7 @@ app.use(cors({
 // Apply authLimiter specifically to sensitive routes
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/signup', authLimiter);
+app.use('/api/admin/login', authLimiter);
 
 app.use('/api', routes);
 
