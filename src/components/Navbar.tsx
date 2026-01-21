@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, X, Leaf, User, LogOut } from "lucide-react";
 
 import { useShop } from "@/context/ShopContext";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cartItems, currentUser, logout } = useShop();
+  const location = useLocation();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -17,6 +19,19 @@ const Navbar = () => {
     { name: "How it Works", href: "/#how-it-works" },
     { name: "Contact", href: "/#footer" },
   ];
+
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/" && location.hash === "") {
+      return true;
+    }
+    if (path.includes("#")) {
+      return location.pathname + location.hash === path;
+    }
+    if (path !== "/" && location.pathname.startsWith(path)) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
@@ -38,7 +53,12 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.href}
-                className="text-muted-foreground hover:text-primary font-medium transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                className={cn(
+                  "font-medium transition-colors hover:text-primary",
+                  isActive(link.href)
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
               >
                 {link.name}
               </Link>
@@ -107,7 +127,12 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.href}
-                  className="px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted rounded-lg font-medium transition-colors"
+                  className={cn(
+                    "px-4 py-3 rounded-lg font-medium transition-colors",
+                    isActive(link.href)
+                      ? "text-primary bg-muted/50"
+                      : "text-muted-foreground hover:text-primary hover:bg-muted"
+                  )}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
