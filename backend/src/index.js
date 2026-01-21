@@ -1,43 +1,27 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
-const rateLimit = require('express-rate-limit');
-const routes = require('./routes');
-const { errorHandler } = require('./middleware/errorHandler');
-const { connect } = require('./db/mongo');
 
-const app = express();
-const PORT = process.env.PORT || 5000;
 
-const limiter = rateLimit({ windowMs: 60 * 1000, max: 100 });
+  const app = express();
 
-app.use(helmet());
-app.use(morgan('dev'));
-app.use(limiter);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Specialized Rate Limiter for Auth Routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per window
+  message: { ok: false, error: 'Too many attempts, please try again later' }
+});
+
+app.use(helmet()); // Sets various security-related HTTP headers
 app.use(cookieParser());
+app.use(express.json({ limit: '10kb' })); // Prevent large payload DoS
 
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
+// Strict CORS: No wildcard origins allowed
+app.use(cors({ 
+  origin: process.env.FRONTEND_URL, 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+
+// Apply authLimiter specifically to sensitive routes
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/signup', authLimiter);
 
 app.use('/api', routes);
-
-app.use(errorHandler);
-
-  (async () => {
-    if (process.env.MONGODB_URI) {
-      try {
-        await connect(process.env.MONGODB_URI);
-        console.log('Connected to MongoDB');
-      } catch (err) {
-        console.warn('Could not connect to MongoDB:', err.message);
-      }
-    }
-
-    app.listen(PORT, () => {
-      console.log(`Freshmart backend running on http://localhost:${PORT}`);
-    });
-  })();

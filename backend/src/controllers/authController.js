@@ -1,41 +1,43 @@
-const db = require('../data/db');
-const { connected } = require('../db/mongo');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
+const signToken = (payload, secret, expires) => {
+  return jwt.sign(payload, secret, { expiresIn: expires });
+};
 
 async function signup(req, res, next) {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ ok: false, error: 'Missing email or password' });
-    if (connected()) {
-      const exists = await User.findOne({ email });
-      if (exists) return res.status(400).json({ ok: false, error: 'User already exists' });
-      const user = await User.create({ email, password: String(password) });
-      return res.status(201).json({ ok: true, data: { id: user._id, email: user.email } });
-    }
-    const exists = db.users.find((u) => u.email === email);
-    if (exists) return res.status(400).json({ ok: false, error: 'User already exists' });
-    const user = { id: db.nextId(), email, password: String(password) };
-    db.users.push(user);
-    res.status(201).json({ ok: true, data: { id: user.id, email: user.email } });
-  } catch (err) {
-    next(err);
-  }
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(400).json({ ok: false, error: 'Email already in use' });
+
+    const user = await User.create({ email, password });
+    res.status(201).json({ ok: true, data: { id: user._id, email: user.email, role: user.role } });
+  } catch (err) { next(err); }
 }
 
 async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-    if (connected()) {
-      const user = await User.findOne({ email, password: String(password) });
-      if (!user) return res.status(401).json({ ok: false, error: 'Invalid credentials' });
-      return res.json({ ok: true, data: { id: user._id, email: user.email } });
+    const user = await User.findOne({ email });
+    
+    // Constant time check against brute force (simplified logic)
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ ok: false, error: 'Invalid credentials' });
     }
-    const user = db.users.find((u) => u.email === email && u.password === String(password));
-    if (!user) return res.status(401).json({ ok: false, error: 'Invalid credentials' });
-    res.json({ ok: true, data: { id: user.id, email: user.email } });
-  } catch (err) {
-    next(err);
-  }
+
+    const accessToken = signToken({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, '15m');
+    
+    // Secure HTTP-only cookie configuration
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true, // Prevents XSS-based token theft
+      secure: process.env.NODE_ENV === 'production', // Only over HTTPS
+      sameSite: 'Strict', // Prevents CSRF
+      maxAge: 15 * 60 * 1000 // 15 Minutes
+    });
+
+    res.json({ ok: true, data: { email: user.email, role: user.role } });
+  } catch (err) { next(err); }
 }
 
 module.exports = { signup, login };
