@@ -1,9 +1,10 @@
-declare module "process" {
-    import { Control, MessageOptions } from "node:child_process";
-    import * as tty from "node:tty";
-    import { Worker } from "node:worker_threads";
+import { Control, MessageOptions } from "node:child_process";
+import * as tty from "node:tty";
+import { Worker } from "node:worker_threads";
 
-    interface BuiltInModule {
+declare global {
+    namespace NodeJS {
+        interface BuiltInModule {
         "assert": typeof import("assert");
         "node:assert": typeof import("node:assert");
         "assert/strict": typeof import("assert/strict");
@@ -11,6 +12,7 @@ declare module "process" {
         "async_hooks": typeof import("async_hooks");
         "node:async_hooks": typeof import("node:async_hooks");
         "buffer": typeof import("buffer");
+        
         "node:buffer": typeof import("node:buffer");
         "child_process": typeof import("child_process");
         "node:child_process": typeof import("node:child_process");
@@ -117,9 +119,8 @@ declare module "process" {
         "zlib": typeof import("zlib");
         "node:zlib": typeof import("node:zlib");
     }
-    global {
-        var process: NodeJS.Process;
-        namespace NodeJS {
+    var process: NodeJS.Process;
+    namespace NodeJS {
             // this namespace merge is here because these are specifically used
             // as the type for process.stdin, process.stdout, and process.stderr.
             // they can't live in tty.d.ts because we need to disambiguate the imported name.
@@ -624,7 +625,7 @@ declare module "process" {
                 setgroups?: (groups: ReadonlyArray<string | number>) => void;
                 setUncaughtExceptionCaptureCallback(cb: ((err: Error) => void) | null): void;
                 hasUncaughtExceptionCaptureCallback(): boolean;
-                sourceMapsEnabled: boolean;
+                readonly sourceMapsEnabled: boolean;
                 setSourceMapsEnabled(value: boolean): void;
                 readonly version: string;
                 readonly versions: ProcessVersions;
@@ -743,12 +744,8 @@ declare module "process" {
             }
         }
     }
-    export = process;
 }
-declare module "node:process" {
-    import process = require("process");
-    export = process;
-}
+export = process;
 declare var global: typeof globalThis;
 
 declare var process: NodeJS.Process;
@@ -847,11 +844,7 @@ declare namespace NodeJS {
         filename?: string | undefined;
     }
 
-    interface Iterator<T, TReturn = any, TNext = any> extends IteratorObject<T, TReturn, TNext> {
-        [Symbol.iterator](): NodeJS.Iterator<T, TReturn, TNext>;
-    }
-
-    interface AsyncIterator<T, TReturn = any, TNext = any> extends AsyncIteratorObject<T, TReturn, TNext> {
-        [Symbol.asyncIterator](): NodeJS.AsyncIterator<T, TReturn, TNext>;
+    interface AsyncIterator<T> {
+        [Symbol.asyncIterator](): NodeJS.AsyncIterator<T>;
     }
 }
