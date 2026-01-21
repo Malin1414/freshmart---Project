@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, X, Leaf, User, LogOut } from "lucide-react";
@@ -10,22 +10,60 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cartItems, currentUser, logout } = useShop();
   const location = useLocation();
+  const [activeSection, setActiveSection] = useState("");
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Shop", href: "/#FeaturedProducts" },
     { name: "Categories", href: "/#categories" },
+    { name: "Shop", href: "/#FeaturedProducts" },
     { name: "Shop All Product", href: "/products" },
     { name: "How it Works", href: "/#how-it-works" },
     { name: "Contact", href: "/#footer" },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (location.pathname !== "/") return;
+
+      const sections = navLinks
+        .map((link) => {
+          if (link.href.includes("#")) {
+            return link.href.split("#")[1];
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      let current = "";
+
+      if (window.scrollY < 100) {
+        current = "";
+      } else {
+        for (const section of sections) {
+          const element = document.getElementById(section as string);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 150 && rect.bottom >= 150) {
+              current = section as string;
+              break;
+            }
+          }
+        }
+      }
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [location.pathname]);
+
   const isActive = (path: string) => {
-    if (path === "/" && location.pathname === "/" && location.hash === "") {
+    if (path === "/" && location.pathname === "/" && !activeSection) {
       return true;
     }
     if (path.includes("#")) {
-      return location.pathname + location.hash === path;
+      const sectionId = path.split("#")[1];
+      return location.pathname === "/" && activeSection === sectionId;
     }
     if (path !== "/" && location.pathname.startsWith(path)) {
       return true;
