@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { useShop } from "@/context/ShopContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const signUpSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
@@ -203,16 +205,17 @@ const SignUp = () => {
             </p>
           </form>
 
-          {/* Login Link */}
-          <p className="mt-8 text-center text-muted-foreground">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-primary font-semibold hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
+          {/* Login Button */}
+          <div className="mt-8 text-center">
+            <p className="text-muted-foreground mb-4">
+              Already have an account?
+            </p>
+            <Button variant="outline" asChild>
+              <Link to="/login">
+                Sign in
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
 
