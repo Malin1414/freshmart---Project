@@ -50,23 +50,43 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Store user data in memory (not localStorage as per restrictions)
-      const userData = { email: formData.email, loggedIn: true };
-      
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Sign in failed",
+          description: data.error || "Invalid credentials",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       toast({
         title: "✓ Welcome Back!",
         description: "You've successfully signed in to FreshMart",
       });
 
-      setIsLoading(false);
-      // In real app: navigate("/")
-      console.log("Login successful:", userData);
+      // Store user data
+      localStorage.setItem("userEmail", data.data.email);
+      localStorage.setItem("userId", data.data.id);
+
+      // Navigate to home or dashboard
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
     } catch (err) {
       toast({
-        title: "Sign in failed",
+        title: "Connection Error",
         description: "Unable to reach server. Try again.",
         variant: "destructive",
       });

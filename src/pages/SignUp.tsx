@@ -57,18 +57,54 @@ const SignUp = () => {
 
     setIsLoading(true);
 
-    // Call signup from context
-    // Simulate network delay for better UX
-    setTimeout(() => {
-      signup({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Sign up failed",
+          description: data.error || "Unable to create account",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      toast({
+        title: "✓ Account Created!",
+        description: "Welcome to FreshMart! You can now sign in.",
+      });
+
+      // Store user data
+      localStorage.setItem("userEmail", data.data.email);
+      localStorage.setItem("userId", data.data.id);
+
+      setFormData({ name: "", email: "", password: "" });
+
+      // Navigate to login
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (err) {
+      toast({
+        title: "Connection Error",
+        description: "Unable to reach server. Try again.",
+        variant: "destructive",
       });
       setIsLoading(false);
-      setFormData({ name: "", email: "", password: "" });
-      navigate("/my-orders");
-    }, 1000);
+    }
   };
 
   const benefits = [
